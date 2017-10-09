@@ -1,0 +1,24 @@
+C:\Users\burken\source\repos\Matrix solution\Matrix solution\bin\Debug\Matrix solution.exe.config
+C:\Users\burken\source\repos\Matrix solution\Matrix solution\bin\Debug\Matrix solution.exe
+C:\Users\burken\source\repos\Matrix solution\Matrix solution\bin\Debug\Matrix solution.pdb
+C:\Users\burken\source\repos\Matrix solution\Matrix solution\bin\Debug\AForge.Controls.dll
+C:\Users\burken\source\repos\Matrix solution\Matrix solution\bin\Debug\AForge.Video.dll
+C:\Users\burken\source\repos\Matrix solution\Matrix solution\bin\Debug\AForge.dll
+C:\Users\burken\source\repos\Matrix solution\Matrix solution\bin\Debug\AForge.Imaging.dll
+C:\Users\burken\source\repos\Matrix solution\Matrix solution\bin\Debug\AForge.Math.dll
+C:\Users\burken\source\repos\Matrix solution\Matrix solution\bin\Debug\AForge.Controls.xml
+C:\Users\burken\source\repos\Matrix solution\Matrix solution\bin\Debug\AForge.Video.xml
+C:\Users\burken\source\repos\Matrix solution\Matrix solution\bin\Debug\AForge.xml
+C:\Users\burken\source\repos\Matrix solution\Matrix solution\bin\Debug\AForge.Imaging.xml
+C:\Users\burken\source\repos\Matrix solution\Matrix solution\bin\Debug\AForge.Math.xml
+C:\Users\burken\source\repos\Matrix solution\Matrix solution\obj\Debug\Matrix solution.csprojResolveAssemblyReference.cache
+C:\Users\burken\source\repos\Matrix solution\Matrix solution\obj\Debug\Matrix_solution.Form1.resources
+C:\Users\burken\source\repos\Matrix solution\Matrix solution\obj\Debug\Matrix_solution.Properties.Resources.resources
+C:\Users\burken\source\repos\Matrix solution\Matrix solution\obj\Debug\Matrix solution.csproj.GenerateResource.Cache
+C:\Users\burken\source\repos\Matrix solution\Matrix solution\obj\Debug\Matrix solution.csproj.CoreCompileInputs.cache
+C:\Users\burken\source\repos\Matrix solution\Matrix solution\obj\Debug\Matrix solution.exe
+C:\Users\burken\source\repos\Matrix solution\Matrix solution\obj\Debug\Matrix solution.pdb
+C:\Users\burken\source\repos\Matrix solution\Matrix solution\bin\Debug\AForge.Video.DirectShow.dll
+C:\Users\burken\source\repos\Matrix solution\Matrix solution\bin\Debug\AForge.Video.DirectShow.xml
+C:\Users\burken\source\repos\Matrix solution\Matrix solution\bin\Debug\AForge.Vision.dll
+C:\Users\burken\source\repos\Matrix solution\Matrix solution\bin\Debug\AForge.Vision.xml
