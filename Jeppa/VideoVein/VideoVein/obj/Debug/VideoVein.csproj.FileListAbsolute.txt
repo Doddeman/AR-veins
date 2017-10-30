@@ -1,0 +1,15 @@
+C:\Users\Jesper\Desktop\Github\AR-veins\VideoVein\VideoVein\bin\Debug\VideoVein.exe.config
+C:\Users\Jesper\Desktop\Github\AR-veins\VideoVein\VideoVein\bin\Debug\VideoVein.exe
+C:\Users\Jesper\Desktop\Github\AR-veins\VideoVein\VideoVein\bin\Debug\VideoVein.pdb
+C:\Users\Jesper\Desktop\Github\AR-veins\VideoVein\VideoVein\bin\Debug\AForge.Video.DirectShow.dll
+C:\Users\Jesper\Desktop\Github\AR-veins\VideoVein\VideoVein\bin\Debug\AForge.Video.dll
+C:\Users\Jesper\Desktop\Github\AR-veins\VideoVein\VideoVein\bin\Debug\AForge.dll
+C:\Users\Jesper\Desktop\Github\AR-veins\VideoVein\VideoVein\bin\Debug\AForge.Video.xml
+C:\Users\Jesper\Desktop\Github\AR-veins\VideoVein\VideoVein\bin\Debug\AForge.Video.DirectShow.xml
+C:\Users\Jesper\Desktop\Github\AR-veins\VideoVein\VideoVein\bin\Debug\AForge.xml
+C:\Users\Jesper\Desktop\Github\AR-veins\VideoVein\VideoVein\obj\Debug\VideoVein.csprojResolveAssemblyReference.cache
+C:\Users\Jesper\Desktop\Github\AR-veins\VideoVein\VideoVein\obj\Debug\VideoVein.Form1.resources
+C:\Users\Jesper\Desktop\Github\AR-veins\VideoVein\VideoVein\obj\Debug\VideoVein.Properties.Resources.resources
+C:\Users\Jesper\Desktop\Github\AR-veins\VideoVein\VideoVein\obj\Debug\VideoVein.csproj.GenerateResource.Cache
+C:\Users\Jesper\Desktop\Github\AR-veins\VideoVein\VideoVein\obj\Debug\VideoVein.exe
+C:\Users\Jesper\Desktop\Github\AR-veins\VideoVein\VideoVein\obj\Debug\VideoVein.pdb
