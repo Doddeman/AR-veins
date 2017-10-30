@@ -18,3 +18,6 @@ C:\Users\burken\source\repos\Grayscale\Grayscale\bin\Debug\AForge.Imaging.xml
 C:\Users\burken\source\repos\Grayscale\Grayscale\bin\Debug\AForge.Math.xml
 C:\Users\burken\source\repos\Grayscale\Grayscale\obj\Debug\Grayscale.exe
 C:\Users\burken\source\repos\Grayscale\Grayscale\obj\Debug\Grayscale.pdb
+C:\Users\Johanna\Desktop\TBMT14\AR-veins\Johanna\Grayscale\Grayscale\obj\Debug\Grayscale.csprojResolveAssemblyReference.cache
+C:\Users\Johanna\Desktop\TBMT14\AR-veins\Johanna\Grayscale\Grayscale\obj\Debug\Grayscale.exe
+C:\Users\Johanna\Desktop\TBMT14\AR-veins\Johanna\Grayscale\Grayscale\obj\Debug\Grayscale.pdb
