@@ -1,0 +1,28 @@
+bandpass filter (lågpass tar bort brus och högpass tar bort större färgförändringar (förändringar över ljusstyrka))
+
+polarisation (när vi tar bilden) skaffa polarisationsfilter (fysiskt) gör att venerna blir tydligare
+
+sobel (edge detection)
+
+SUMMERING
+
+Använd mer ljus (behöver beställas nåt smart)
+sätt diffusionsfilm framför LED
+sätt polarisationsfilm framför diffusionsfilmen
+sätt motsatt polarisations film framför LINSEN (behållare måste beställas, kontakta markus om linsdiameter)
+
+Vi skulle också vilja ha ett större ark med diffusionsfilm
+
+Varför polarisationsfilm?
+Då kommer vi skicka ut polariserat ljus. Ljuset som studsar tillbaka från hud och hår är i majoritet fof 
+polariserat och kommer studsa tillbak men kommer inte att komma in i kameran pga dess motsatta polariseringsfilm.
+På så sätt får vi främst se de långtgående fotonerna vilket är EXAKT vad vi vill. Med andra ord, tydligare vener.
+
+UPPLÄGG AV ARBETE
+Ta fram en ordentlig plan om vem som gör vad. Vad behöver främst prioriteras?
+
+Få hjälp att få in bild i matlab.
+Bestämma uppställningen. (detta är viktigt så att kvaliteten på bilden är färdig) När vi får godkänt bra bilder, 
+börja bildbehandling och cadda!
+
+Ska vi kanske bara använda matlab istället?
