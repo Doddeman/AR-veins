@@ -102,5 +102,30 @@ picture = butterworth(Imaver);
 figure(2)
 imshow(picture)
 
+figure(3)
+mesh(Imaver)
+
+figure(4)
+paddedmatrix = padzeros(Imaver);
+theimage = uint8(paddedmatrix);
+imshow(theimage)
+
+figure(5)
+edgy = edge(theimage,'Prewitt', 0.009);
+theedgyimage = uint8(edgy);
+mesh(edgy)
+
+
+[B,L,N] = bwboundaries(theimage);
+imshow(theimage); hold on;
+for k=1:length(B),
+   boundary = B{k};
+   if(k > N)
+     plot(boundary(:,2), boundary(:,1), 'g','LineWidth',2);
+   else
+     plot(boundary(:,2), boundary(:,1), 'r','LineWidth',2);
+   end
+end
+
 
 
