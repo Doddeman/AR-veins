@@ -88,9 +88,9 @@ xlabel('Gaussian Bandpassfilter')
 
 %Low pass filter
 
-Im = double(imread('paddhand.png'));
+Im = double(imread('jeppa.png'));
 aver = [1 2 1; 2 4 2; 1 2 1]/16;
-Imaver = conv2(Im, aver,'same');
+Imaver = conv2(Im, aver);
 Image= uint8(Imaver);
 subplot(2,2,3)
 imshow(Image)
@@ -111,9 +111,10 @@ figure(4)
 mesh(paddedmatrix)
 
 figure(5)
-edgy = edge(theimage,'Prewitt', 0.009);
+edgy = edge(theimage,'Canny', 0.009);
 theedgyimage = uint8(edgy);
 mesh(edgy)
+
 
 
 [B,L,N] = bwboundaries(theimage);
