@@ -88,7 +88,7 @@ xlabel('Gaussian Bandpassfilter')
 
 %Low pass filter
 
-Im = double(imread('jeppa.png'));
+Im = double(imread('paddhand.png'));
 aver = [1 2 1; 2 4 2; 1 2 1]/16;
 Imaver = conv2(Im, aver,'same');
 Image= uint8(Imaver);
@@ -103,12 +103,12 @@ figure(2)
 imshow(picture)
 
 figure(3)
-mesh(Imaver)
-
-figure(4)
 paddedmatrix = padzeros(Imaver);
 theimage = uint8(paddedmatrix);
 imshow(theimage)
+
+figure(4)
+mesh(paddedmatrix)
 
 figure(5)
 edgy = edge(theimage,'Prewitt', 0.009);
