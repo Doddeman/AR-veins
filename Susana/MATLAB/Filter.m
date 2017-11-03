@@ -88,7 +88,8 @@ xlabel('Gaussian Bandpassfilter')
 
 %Low pass filter
 
-Im = double(imread('jeppa.png'));
+Im1 = imread('jeppapaint.png');
+Im = double(rgb2gray(Im1));
 aver = [1 2 1; 2 4 2; 1 2 1]/16;
 Imaver = conv2(Im, aver);
 Image= uint8(Imaver);
@@ -98,8 +99,8 @@ xlabel('Low pass filter')
 
 % Low pass filter + Butterworth -->BRA!! NO HIGH PASS FILTER BAD!
 
-picture = butterworth(Imaver);
 figure(2)
+picture = butterworth(Imaver);
 imshow(picture)
 
 figure(3)
@@ -115,18 +116,6 @@ edgy = edge(theimage,'Canny', 0.009);
 theedgyimage = uint8(edgy);
 mesh(edgy)
 
-
-
-[B,L,N] = bwboundaries(theimage);
-imshow(theimage); hold on;
-for k=1:length(B),
-   boundary = B{k};
-   if(k > N)
-     plot(boundary(:,2), boundary(:,1), 'g','LineWidth',2);
-   else
-     plot(boundary(:,2), boundary(:,1), 'r','LineWidth',2);
-   end
-end
 
 
 

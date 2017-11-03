@@ -4,7 +4,7 @@
 
 function PZ = padzeros (matrix)
 
-matrix(matrix < 85.0) = [NaN];
+matrix(matrix < 80.0) = [NaN];
 
 PZ = matrix;
 
