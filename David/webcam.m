@@ -9,6 +9,7 @@ while true
     Image = uint8(Imaver);
     B = imresize(Image,[480 640]);
     figure(1)
+    B = imadjust(B,[0.3; 0.6],[0.0;1.0]);;
     imshow(B);
 %     image(B);
     xlabel('Low pass filter')
