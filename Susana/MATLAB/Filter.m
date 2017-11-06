@@ -1,51 +1,16 @@
 
-%Butterworth filter:
-
-micro = imread('jeppa.png'); %Matris 
-micro = double(micro); 
-[nx ny] = size(micro); 
-u = micro; 
-micro = uint8(u); 
-imwrite(micro,'jeppa.png'); 
-fftu = fft2(u,2*nx-1,2*ny-1); 
-fftu = fftshift(fftu); 
-
 figure(1)
 title('Butterworth/Gaussian Bandpass filter')
 subplot(2,2,1)
 imshow('jeppa.png');
 xlabel('original');
 
-% Initialize filter. 
-filter1 = ones(2*nx-1,2*ny-1); 
-filter2 = ones(2*nx-1,2*ny-1); 
-filter3 = ones(2*nx-1,2*ny-1); 
-n = 4; 
-for i = 1:2*nx-1 
-    for j =1:2*ny-1 
-        dist = ((i-(nx+1))^2 + (j-(ny+1))^2)^.5; 
-        
-        % Use Butterworth filter. 
-        filter1(i,j)= 1/(1 + (dist/120)^(2*n)); 
-        filter2(i,j) = 1/(1 + (dist/30)^(2*n)); 
-        filter3(i,j)= 1.0 - filter2(i,j); 
-        filter3(i,j) = filter1(i,j).*filter3(i,j); 
-    end
- 
-end
- 
-% Update image with passed frequencies.
- 
-fil_micro1 = fftu + filter3.*fftu; 
-fil_micro2 = ifftshift(fil_micro1); 
-fil_micro3 = ifft2(fil_micro2,2*nx-1,2*ny-1); 
-fil_micro4 = real(fil_micro3(1:nx,1:ny)); 
-fil_micro = uint8(fil_micro4); 
+%Butterworth filter:
+micro = imread('jeppa.png'); %Matris 
+fil_micro = butterworth(micro);
 subplot(2,2,2) 
 imshow(fil_micro,[])
 xlabel('Butterworth bandpass filter')
-
-
 
 % Gaussian Bandpass Filter
 
@@ -88,8 +53,8 @@ xlabel('Gaussian Bandpassfilter')
 
 %Low pass filter
 
-Im1 = imread('jeppapaint.png');
-Im = double(rgb2gray(Im1));
+Im = imread('jeppa.png');
+%Im = double(rgb2gray(Im1));
 aver = [1 2 1; 2 4 2; 1 2 1]/16;
 Imaver = conv2(Im, aver);
 Image= uint8(Imaver);
@@ -102,7 +67,10 @@ xlabel('Low pass filter')
 figure(2)
 picture = butterworth(Imaver);
 imshow(picture)
+%figure(3)
+%imshow('jeppacut.png')
 
+%{
 figure(3)
 paddedmatrix = padzeros(Imaver);
 theimage = uint8(paddedmatrix);
@@ -110,12 +78,33 @@ imshow(theimage)
 
 figure(4)
 mesh(paddedmatrix)
+%}
 
-figure(5)
-edgy = edge(theimage,'Canny', 0.009);
-theedgyimage = uint8(edgy);
-mesh(edgy)
-imshow(edgy)
+%Imadjust --> JEPPACUT
+
+
+%Imad = imread('jeppacut.png');
+Imad = picture;
+%Imad1 = rgb2gray(Imad);
+Jmad= imadjust(Imad);
+figure(6)
+imshow(Jmad)
+
+smoothie = imgaussfilt(Jmad,2); %Imadjust + smoothie
+figure(7)
+imshow(smoothie);
+
+%Binary --> DOES NOT WORK WELL 
+
+level = graythresh(smoothie);
+BW = imbinarize(smoothie, 0.7);
+
+figure(8)
+imshow(BW)
+figure(9)
+imshow(smoothie)
+
+
 
 
 
