@@ -115,6 +115,7 @@ figure(5)
 edgy = edge(theimage,'Canny', 0.009);
 theedgyimage = uint8(edgy);
 mesh(edgy)
+imshow(edgy)
 
 
 
