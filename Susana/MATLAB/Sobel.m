@@ -9,8 +9,8 @@
 % imshow(Image)
 % xlabel('Sobel-x filter')
 
-I = imread('jeppacut.png');
-Ig = rgb2gray(I);
+Ig = imread('jeppa.png');
+%Ig = rgb2gray(I);
 aver = [1 2 1; 2 4 2; 1 2 1]/16;
 Igl = conv2(Ig, aver);
 Iglb = butterworth(Igl);
