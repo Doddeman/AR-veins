@@ -9,8 +9,8 @@
 % imshow(Image)
 % xlabel('Sobel-x filter')
 
-Ig = imread('jeppa.png');
-%Ig = rgb2gray(I);
+I = imread('jeppacut.png');
+Ig = rgb2gray(I);
 aver = [1 2 1; 2 4 2; 1 2 1]/16;
 Igl = conv2(Ig, aver);
 Iglb = butterworth(Igl);
@@ -59,7 +59,7 @@ imshow(Fy)
 title('central')
 
 figure(12)
-nohole = imfill(Fy,'holes');
+nohole = imfill(Fy, 'holes');
 imshow(nohole)
 
 figure(13)
@@ -74,9 +74,16 @@ figure(14)
 imshow(binary)
 
 figure(15)
-subplot(2,2,1)
+subplot(1,2,1)
 imshow(binary, [1 1 1; 1 0 0])
-subplot(2,2,2)
+subplot(1,2,2)
 imshow(binary, [0 0 0; 1 0 0])
-subplot(2,2,3)
+
+medianbinary = medfilt2(binary, [5,5]);
+
+figure(16)
+imshow(medianbinary)
+
+
+
 
