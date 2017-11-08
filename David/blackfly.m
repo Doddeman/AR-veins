@@ -1,4 +1,4 @@
-cam = videoinput('pointgrey', 1, 'F7_Mono8_1288x964_Mode0');
+cam = videoinput('pointgrey', 1, 'F7_Mono8_644x482_Mode1');
 src = getselectedsource(cam);
 
 while true %infinite loop
