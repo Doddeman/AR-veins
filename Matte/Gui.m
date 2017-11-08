@@ -22,7 +22,7 @@ function varargout = Gui(varargin)
     
     % Edit the above text to modify the response to help Gui
     
-    % Last Modified by GUIDE v2.5 08-Nov-2017 11:04:59
+    % Last Modified by GUIDE v2.5 08-Nov-2017 14:47:00
     
     % Begin initialization code - DO NOT EDIT
     gui_Singleton = 1;
@@ -81,31 +81,60 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
 
     caseName = 'default';
     while isrunning(vid)
-        frame=uint8(getsnapshot(vid));
-        pause(0.2) % 5 fps
-%         frame = rgb2gray(frame);
         
-        switch caseName
-            case 'gaussian'
-                frame =  imgaussfilt(frame, 2);
-            case 'derivative'
-                [~,frame] = imgradientxy(frame);
-            case 'greenFilter'
-                frame = ind2rgb(gray2ind(frame,255),summer(255)); 
-            case 'redFilter'
-                frame = ind2rgb(gray2ind(frame,255),autumn(255));
-            case 'contrast'
+        frame=uint8(getsnapshot(vid));
+        
+        if (get(handles.redCheck, 'Value') == 1)
+            frame = ind2rgb(gray2ind(frame,255),autumn(255));
+            set(handles.greenCheck, 'Value', 0);
+        end
+        
+        if (get(handles.greenCheck, 'Value') == 1)
+            frame = ind2rgb(gray2ind(frame,255), summer(255));
+            set(handles.redCheck, 'Value', 0);
+        end
+        
+        if (get(handles.gaussCheck, 'Value') == 1)
+            frame =  imgaussfilt(frame, 2);
+        end
+        
+        if (get(handles.derCheck, 'Value') == 1)
+            [~,frame] = imgradientxy(frame);
+        end
+        
+        if (get(handles.contrastCheck, 'Value') == 1)
+            frame = histeq(frame); %fan rätt bra
+            frame = imadjust(frame, [0 1],[0 0.7]);
+            frame =  imgaussfilt(frame, 2);
+        end
+        
+%% Case, troligtvis ej använda
+%         if (get(handles.grayBox, 'Value') == 1)
+%             frame = rgb2gray(frame);
+%         end
+   
+                   %         frame = imadjust(frame,[0.3; 0.6],[0.0;1.0]);
+                   %         frame = flip(frame ,2);
+        
+
+%         switch caseName
+%             case 'gaussian'
+%                 frame =  imgaussfilt(frame, 2);
+%             case 'derivative'
+%                 [~,frame] = imgradientxy(frame);
+%             case 'greenFilter'
+%                 frame = ind2rgb(gray2ind(frame,255),summer(255)); 
+%             case 'redFilter'
+%                 frame = ind2rgb(gray2ind(frame,255),autumn(255));
+%             case 'contrast'
                 
                 
 
-%                 frame = adapthisteq(frame);
+% %                 frame = adapthisteq(frame);
+% 
 
-                 frame = histeq(frame); %fan rätt bra
-                 frame = imadjust(frame, [0 1],[0 0.7]);
-                 frame =  imgaussfilt(frame, 2);
-%                    frame = ind2rgb(gray2ind(frame,255),autumn(255));
-            case 'default'
-                
+%             case 'default'
+%                 
                 
                 %   frame = ind2rgb(gray2ind(frame,255),jet(255));
                 %     frame = ind2rgb(gray2ind(frame,255),summer(255)); %GREEN
@@ -113,7 +142,9 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
                 
                 % imshow(rgbImage);
                 
-        end
+      %  end
+%%        
+        pause(0.1) % 5 fps
         imshow(frame, 'Parent', snapFrame)
         %         Imaver = conv2(frame, aver);
         %         frame = butterworth(Imaver);
@@ -169,13 +200,13 @@ function gaussCheck_Callback(hObject, eventdata, handles)
     % handles    structure with handles and user data (see GUIDATA)
     
     % Hint: get(hObject,'Value') returns toggle state of gaussCheck
-    global caseName
-    val = get(hObject,'Value');
-    if val == 1
-        caseName = 'gaussian';
-    else
-        caseName = 'default';
-    end
+%     global caseName
+%     val = get(hObject,'Value');
+%     if val == 1
+%         caseName = 'gaussian';
+%     else
+%         caseName = 'default';
+%     end
     
     
     % --- Executes on button press in derCheck.
@@ -185,14 +216,14 @@ function derCheck_Callback(hObject, eventdata, handles)
     % handles    structure with handles and user data (see GUIDATA)
     
     % Hint: get(hObject,'Value') returns toggle state of derCheck
-    global caseName
-    val = get(hObject,'Value')
-    
-    if val == 1
-        caseName = 'derivative'
-    else
-        caseName = 'default';
-    end
+%     global caseName
+%     val = get(hObject,'Value')
+%     
+%     if val == 1
+%         caseName = 'derivative'
+%     else
+%         caseName = 'default';
+%     end
     
     % --- Executes on button press in contrastCheck.
 function contrastCheck_Callback(hObject, eventdata, handles)
@@ -201,14 +232,14 @@ function contrastCheck_Callback(hObject, eventdata, handles)
     % handles    structure with handles and user data (see GUIDATA)
     
     % Hint: get(hObject,'Value') returns toggle state of contrastCheck
-        global caseName
-    val = get(hObject,'Value')
-    
-    if val == 1
-        caseName = 'contrast'
-    else
-        caseName = 'default';
-    end
+%         global caseName
+%     val = get(hObject,'Value')
+%     
+%     if val == 1
+%         caseName = 'contrast'
+%     else
+%         caseName = 'default';
+%     end
     
     
     
@@ -220,14 +251,14 @@ function redCheck_Callback(hObject, eventdata, handles)
     % handles    structure with handles and user data (see GUIDATA)
     
     % Hint: get(hObject,'Value') returns toggle state of redCheck
-    global caseName
-    val = get(hObject,'Value')
-    
-    if val == 1
-        caseName = 'redFilter'
-    else
-        caseName = 'default';
-    end
+%     global caseName
+%     val = get(hObject,'Value')
+%     
+%     if val == 1
+%         caseName = 'redFilter'
+%     else
+%         caseName = 'default';
+%     end
     
     
     % --- Executes on button press in greenCheck.
@@ -237,14 +268,14 @@ function greenCheck_Callback(hObject, eventdata, handles)
     % handles    structure with handles and user data (see GUIDATA)
     
     % Hint: get(hObject,'Value') returns toggle state of greenCheck
-    global caseName
-    val = get(hObject,'Value')
-    
-    if val == 1
-        caseName = 'greenFilter'
-    else
-        caseName = 'default';
-    end
+%     global caseName
+%     val = get(hObject,'Value')
+%     
+%     if val == 1
+%         caseName = 'greenFilter'
+%     else
+%         caseName = 'default';
+%     end
     
     
     % --- Executes when user attempts to close Gui.
@@ -259,3 +290,12 @@ function Gui_CloseRequestFcn(hObject, eventdata, handles)
     stop(vid);
     
     delete(hObject);
+
+
+% --- Executes during object creation, after setting all properties.
+function cameraAxesFrames_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to cameraAxesFrames (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+% surf(handles.cameraAxesFrames);
+% Hint: place code in OpeningFcn to populate cameraAxesFrames
