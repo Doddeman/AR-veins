@@ -22,7 +22,7 @@ function varargout = Gui(varargin)
     
     % Edit the above text to modify the response to help Gui
     
-    % Last Modified by GUIDE v2.5 06-Nov-2017 17:07:38
+    % Last Modified by GUIDE v2.5 08-Nov-2017 11:04:59
     
     % Begin initialization code - DO NOT EDIT
     gui_Singleton = 1;
@@ -55,60 +55,71 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
     % Choose default command line output for Gui
     handles.output = hObject;
     
-    % handles.vid = videoinput('pointgrey', 1, 'F7_Mono12_1288x964_Mode0');
     global vid
-    % global himage2
     global snapFrame
-    global timerWind
     global caseName
-    
-    timerWind = handles.timerWind;
+
     snapFrame = handles.cameraAxesFrames;
-    vid = videoinput('winvideo',1);
+%     vid = videoinput('pointgrey', 1, 'F7_Mono12_1288x964_Mode0');
+     vid = videoinput('pointgrey', 1, 'F7_Mono8_1288x964_Mode0');
+%     vid = videoinput('winvideo',1);
     
-    handles.himage = image(zeros(720,1280,3), 'parent', handles.cameraAxes);
+    handles.himage = image(zeros(720,1280,1), 'parent', handles.cameraAxes);
     %     handles.himage2 = image(zeros(720,1280,3), 'parent', handles.cameraAxesFrames);
     
     % vid.frameGrabInterval = 5;
     vid.FramesPerTrigger = inf;
+    
     % Go on forever until stopped
     set(vid,'TriggerRepeat',Inf);
     triggerconfig(vid,'manual')
+%     vid.ReturnedColorSpace = rgb;
+    
     start(vid)
-    %
+    
     preview(vid, handles.himage);
-    
-    %     timer1 = timer(...
-    %         'ExecutionMode', 'fixedRate', ...       % Run timer repeatedly.
-    %         'Period', 3, ...                        % Initial period is 1 sec.
-    %         'TimerFcn', {@timerFunc, hObject}); % @(src,event) TmrFcn(src,event,gcf,s)
-    %     start(timer1);
-    
-    % updateFrame(hObject, eventdata, handles)
-      caseName = 'default';
-    
+
+    caseName = 'default';
     while isrunning(vid)
         frame=uint8(getsnapshot(vid));
-        pause(0.2)
+        pause(0.2) % 5 fps
+%         frame = rgb2gray(frame);
         
-        frame = rgb2gray(frame);
-      
         switch caseName
             case 'gaussian'
                 frame =  imgaussfilt(frame, 2);
             case 'derivative'
-                [gx,frame] = imgradientxy(frame);
-              imshow(frame, 'Parent', snapFrame)
-            case 'default'
+                [~,frame] = imgradientxy(frame);
+            case 'greenFilter'
+                frame = ind2rgb(gray2ind(frame,255),summer(255)); 
+            case 'redFilter'
+                frame = ind2rgb(gray2ind(frame,255),autumn(255));
+            case 'contrast'
+                
+                
 
+%                 frame = adapthisteq(frame);
+
+                 frame = histeq(frame); %fan rätt bra
+                 frame = imadjust(frame, [0 1],[0 0.7]);
+                 frame =  imgaussfilt(frame, 2);
+%                    frame = ind2rgb(gray2ind(frame,255),autumn(255));
+            case 'default'
+                
+                
+                %   frame = ind2rgb(gray2ind(frame,255),jet(255));
+                %     frame = ind2rgb(gray2ind(frame,255),summer(255)); %GREEN
+                %RED
+                
+                % imshow(rgbImage);
                 
         end
         imshow(frame, 'Parent', snapFrame)
-        %         Imaver = conv2(frame, aver);     
+        %         Imaver = conv2(frame, aver);
         %         frame = butterworth(Imaver);
         % frame = filter(B,A,frame);
         %       frame = conv2(frame, boxKernel, 'same');
-%         imshow(frame, 'Parent', snapFrame)
+        %         imshow(frame, 'Parent', snapFrame)
     end
     
     
@@ -130,63 +141,16 @@ function varargout = Gui_OutputFcn(hObject, eventdata, handles)
     
     
     
-function timerFunc(hObject, eventdata, handles)
-    global vid
-    global snapFrame
-    global timerWind
-    
-    set(timerWind, 'String', num2str(get(hObject,'TasksExecuted')));
-    frame=uint8(getsnapshot(vid));
-    frame = rgb2gray(frame);
-    
-    
-    
-    aver = [1 2 1; 2 4 2; 1 2 1]/16;
-    Imaver = conv2(frame, aver);
-    
-    frame = butterworth(Imaver);
-    imshow(frame, 'Parent', snapFrame)
-    
-    
-    %Butterworth filter:
-function BW = butterworth (immatris)
-    
-    micro = double(immatris);
-    u = micro;
-    [nx ny] = size(micro);
-    fftu = fft2(u,2*nx-1,2*ny-1);
-    fftu = fftshift(fftu);
-    
-    % Initialize filter.
-    filter1 = ones(2*nx-1,2*ny-1);
-    filter2 = ones(2*nx-1,2*ny-1);
-    filter3 = ones(2*nx-1,2*ny-1);
-    n = 4;
-    for i = 1:2*nx-1
-        for j =1:2*ny-1
-            dist = ((i-(nx+1))^2 + (j-(ny+1))^2)^.5;
-            
-            % Use Butterworth filter.
-            filter1(i,j)= 1/(1 + (dist/120)^(2*n));
-            filter2(i,j) = 1/(1 + (dist/30)^(2*n));
-            filter3(i,j)= 1.0 - filter2(i,j);
-            filter3(i,j) = filter1(i,j).*filter3(i,j);
-        end
-        
-    end
-    
-    % Update image with passed frequencies.
-    
-    fil_micro1 = fftu + filter3.*fftu;
-    fil_micro2 = ifftshift(fil_micro1);
-    fil_micro3 = ifft2(fil_micro2,2*nx-1,2*ny-1);
-    fil_micro4 = real(fil_micro3(1:nx,1:ny));
-    fil_micro = uint8(fil_micro4);
-    BW= fil_micro;
-    
-    
-    
-    
+    % function timerFunc(hObject, eventdata, handles)
+    %     global vid
+    %     global snapFrame
+    %     global timerWind
+    %
+    %     set(timerWind, 'String', num2str(get(hObject,'TasksExecuted')));
+    %     frame=uint8(getsnapshot(vid));
+    %     frame = rgb2gray(frame);
+    %
+    %     imshow(frame, 'Parent', snapFrame)
     
     
     % --- Executes on button press in stopButton.
@@ -206,13 +170,13 @@ function gaussCheck_Callback(hObject, eventdata, handles)
     
     % Hint: get(hObject,'Value') returns toggle state of gaussCheck
     global caseName
-     val = get(hObject,'Value');
-     if val == 1
-     caseName = 'gaussian';
-     else
-         caseName = 'default';
-     end
-     
+    val = get(hObject,'Value');
+    if val == 1
+        caseName = 'gaussian';
+    else
+        caseName = 'default';
+    end
+    
     
     % --- Executes on button press in derCheck.
 function derCheck_Callback(hObject, eventdata, handles)
@@ -221,19 +185,77 @@ function derCheck_Callback(hObject, eventdata, handles)
     % handles    structure with handles and user data (see GUIDATA)
     
     % Hint: get(hObject,'Value') returns toggle state of derCheck
-     val = get(hObject,'Value')
-     global caseName
-     
-          if val == 1
-     caseName = 'derivative'
-     else
-         caseName = 'default';
-     end
+    global caseName
+    val = get(hObject,'Value')
     
-    % --- Executes on button press in checkbox3.
-function checkbox3_Callback(hObject, eventdata, handles)
-    % hObject    handle to checkbox3 (see GCBO)
+    if val == 1
+        caseName = 'derivative'
+    else
+        caseName = 'default';
+    end
+    
+    % --- Executes on button press in contrastCheck.
+function contrastCheck_Callback(hObject, eventdata, handles)
+    % hObject    handle to contrastCheck (see GCBO)
     % eventdata  reserved - to be defined in a future version of MATLAB
     % handles    structure with handles and user data (see GUIDATA)
     
-    % Hint: get(hObject,'Value') returns toggle state of checkbox3
+    % Hint: get(hObject,'Value') returns toggle state of contrastCheck
+        global caseName
+    val = get(hObject,'Value')
+    
+    if val == 1
+        caseName = 'contrast'
+    else
+        caseName = 'default';
+    end
+    
+    
+    
+    
+    % --- Executes on button press in redCheck.
+function redCheck_Callback(hObject, eventdata, handles)
+    % hObject    handle to redCheck (see GCBO)
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    structure with handles and user data (see GUIDATA)
+    
+    % Hint: get(hObject,'Value') returns toggle state of redCheck
+    global caseName
+    val = get(hObject,'Value')
+    
+    if val == 1
+        caseName = 'redFilter'
+    else
+        caseName = 'default';
+    end
+    
+    
+    % --- Executes on button press in greenCheck.
+function greenCheck_Callback(hObject, eventdata, handles)
+    % hObject    handle to greenCheck (see GCBO)
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    structure with handles and user data (see GUIDATA)
+    
+    % Hint: get(hObject,'Value') returns toggle state of greenCheck
+    global caseName
+    val = get(hObject,'Value')
+    
+    if val == 1
+        caseName = 'greenFilter'
+    else
+        caseName = 'default';
+    end
+    
+    
+    % --- Executes when user attempts to close Gui.
+function Gui_CloseRequestFcn(hObject, eventdata, handles)
+    % hObject    handle to Gui (see GCBO)
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    structure with handles and user data (see GUIDATA)
+    
+    % Hint: delete(hObject) closes the figure
+    
+    global vid
+    stop(vid);
+    
+    delete(hObject);
