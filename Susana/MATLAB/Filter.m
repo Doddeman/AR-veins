@@ -53,8 +53,8 @@ xlabel('Gaussian Bandpassfilter')
 
 %Low pass filter
 
-Im = imread('jeppa.png');
-%Im = double(rgb2gray(Im1));
+Im1= imread('jeppacut.png');
+Im = double(rgb2gray(Im1));
 aver = [1 2 1; 2 4 2; 1 2 1]/16;
 Imaver = conv2(Im, aver);
 Image= uint8(Imaver);
@@ -104,8 +104,61 @@ imshow(BW)
 figure(9)
 imshow(smoothie)
 
+figure(10)
+jeppacut= imread('jeppacut.png');
+jc = rgb2gray(jeppacut);
+A = adapthisteq(jc,'ClipLimit',0.015);
+imshow(A)
+%% BÄSTA HITTILLS -> SUSANA
+level = graythresh(A);
+BA = imbinarize(A, 0.51);
+BAN = 1  - BA;
+figure(11)
+imshow(BAN)
+
+figure(13)
+median = medfilt2(BA);
+imshow(median)
+
+figure(12)
+imshow(median, [0 0 0; 1 0 0])
+
+figure(14)
+SE = [1 1 1 1 ; 1 1 1 1; 1 1 1 1];
+IM2 = imerode(BAN,SE); %Kan ej beräknas storleken på den bilden pga att den tar bort lite av venerna 
+imshow(IM2)  
+
+figure(15)
+imshow(IM3,[0 0 0; 1 0 0])    %%VARFÖR FUNKAR INTE??
+
+%%
+%Remove noise
+figure(16)
+subplot(2,2,1);
+imshow(median);
+
+%Fill any holes
+fill = imfill(median, 'holes');
+figure(16)
+subplot(2,2,2);
+imshow(fill)
 
 
+%Remove blobs that are smaller than X pixels across
 
+se = strel('disk', 10);
+open = imopen(fill, se);
+subplot(2,2,3);
+imshow(open);
 
+subplot (2,2,4);
+imshow(A)
+
+%Measure Object Diameter 
+
+diameter = regionprops(open,'MajorAxisLength');
+
+figure(17)
+imshow(open)
+d= imdistline; 
 
