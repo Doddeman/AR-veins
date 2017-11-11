@@ -128,8 +128,8 @@ SE = [1 1 1 1 ; 1 1 1 1; 1 1 1 1];
 IM2 = imerode(BAN,SE); %Kan ej beräknas storleken på den bilden pga att den tar bort lite av venerna 
 imshow(IM2)  
 
-figure(15)
-imshow(IM3,[0 0 0; 1 0 0])    %%VARFÖR FUNKAR INTE??
+%figure(15)
+%imshow(IM3,[0 0 0; 1 0 0])    %%VARFÖR FUNKAR INTE??
 
 %%
 %Remove noise
