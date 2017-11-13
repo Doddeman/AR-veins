@@ -9,17 +9,17 @@
 % imshow(Image)
 % xlabel('Sobel-x filter')
 
-I = imread('jeppacut.png');
-Ig = rgb2gray(I);
+Ig = imread('jeppa.png');
+%Ig = rgb2gray(I);
 aver = [1 2 1; 2 4 2; 1 2 1]/16;
 Igl = conv2(Ig, aver);
 Iglb = butterworth(Igl);
 Image = uint8(Iglb);
 
 figure(1)
-subplot(2,2,1)
+subplot(1,2,1)
 imshow('jeppa.png')
-subplot(2,2,2)
+subplot(1,2,2)
 imshow(Image)
 
 figure(5)
@@ -103,4 +103,62 @@ level = graythresh(pic);
 hej = imbinarize(I2, 0.2);
 
 imshow(hej)
+
+%%
+originalI = imread('jeppa.png');
+se = offsetstrel('ball',3,3);
+sel = strel('line',11,90);
+erodedI = imerode(originalI,se);
+erodedmedian = imerode(median,se);
+
+figure(900)
+imshow('jeppa.png')
+figure(901)
+imshow(erodedI)
+figure(902)
+imshow(median)
+figure(903)
+imshow(erodedmedian)
+
+%%
+%mitt förslag
+Originalet = imread('jeppacut.png');
+Original = rgb2gray(Originalet);
+
+kernel = [1 2 1; 2 4 2; 1 2 1]/16;
+LP = conv2(Original, kernel);
+BW = butterworth(LP);
+
+FineImage = uint8(BW);
+
+imshow(FineImage)
+
+median = medfilt2(FineImage);
+
+ball = offsetstrel('ball',3,3);
+eroded = imerode(median,ball);
+
+gaussian = imgaussfilt(eroded, 1);
+
+[Fx, Fy] = imgradientxy(gaussian, 'central');
+binary = imbinarize(Fy, 0.6);
+
+figure(1003)
+subplot(1,2,1)
+imshow(eroded)
+subplot(1,2,2)
+imshow(binary)
+
+gaussit = imgaussfilt(double(binary), 6);
+binary2 = imbinarize(gaussit, 0.3);
+
+figure(1004)
+subplot(1,2,1)
+imshow(gaussit)
+subplot(1,2,2)
+imshow(binary2)
+
+
+
+
 
