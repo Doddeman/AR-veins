@@ -81,19 +81,19 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
         frame=uint8(getsnapshot(vid));
         
         
-        frame = rgb2gray(frame);
+%         frame = rgb2gray(frame);
       
        
         
 %         set(gca,{'xlim','ylim'},L)
         if (get(handles.redCheck, 'Value') == 1)
-            frame = ind2rgb(gray2ind(frame,255),autumn(255));
-            set(handles.greenCheck, 'Value', 0);
+            frame = firstfilter(frame);
+            
         end
         
         if (get(handles.greenCheck, 'Value') == 1)
             frame = ind2rgb(gray2ind(frame,255), summer(255));
-            set(handles.redCheck, 'Value', 0);
+%             set(handles.redCheck, 'Value', 0);
         end
         
         if (get(handles.gaussCheck, 'Value') == 1)
@@ -110,7 +110,7 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
             frame =  imgaussfilt(frame, 2);
         end
         
-        pause(0.5) %  fps
+        pause(0.1) %  fps
         
 %         get(gca,{'xlim','ylim'});  % Get axes limits.
         imshow(frame, 'Parent', snapFrame)
