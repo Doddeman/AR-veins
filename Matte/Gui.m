@@ -22,7 +22,7 @@ function varargout = Gui(varargin)
     
     % Edit the above text to modify the response to help Gui
     
-    % Last Modified by GUIDE v2.5 08-Nov-2017 14:47:00
+    % Last Modified by GUIDE v2.5 13-Nov-2017 11:31:49
     
     % Begin initialization code - DO NOT EDIT
     gui_Singleton = 1;
@@ -54,18 +54,16 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
     
     % Choose default command line output for Gui
     handles.output = hObject;
-    
     global vid
     global snapFrame
-    global caseName
 
+    set(gcf,'toolbar','figure');
     snapFrame = handles.cameraAxesFrames;
-%     vid = videoinput('pointgrey', 1, 'F7_Mono12_1288x964_Mode0');
-     vid = videoinput('pointgrey', 1, 'F7_Mono8_1288x964_Mode0');
+         vid = videoinput('pointgrey', 1, 'F7_Mono8_1288x964_Mode0');
 %     vid = videoinput('winvideo',1);
     
-    handles.himage = image(zeros(720,1280,1), 'parent', handles.cameraAxes);
-    %     handles.himage2 = image(zeros(720,1280,3), 'parent', handles.cameraAxesFrames);
+    handles.himage = image(zeros(720,1280,3), 'Parent', handles.cameraAxesFrames);
+   
     
     % vid.frameGrabInterval = 5;
     vid.FramesPerTrigger = inf;
@@ -73,17 +71,21 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
     % Go on forever until stopped
     set(vid,'TriggerRepeat',Inf);
     triggerconfig(vid,'manual')
-%     vid.ReturnedColorSpace = rgb;
     
     start(vid)
-    
     preview(vid, handles.himage);
-
-    caseName = 'default';
+    
+    
     while isrunning(vid)
         
         frame=uint8(getsnapshot(vid));
         
+        
+        frame = rgb2gray(frame);
+      
+       
+        
+%         set(gca,{'xlim','ylim'},L)
         if (get(handles.redCheck, 'Value') == 1)
             frame = ind2rgb(gray2ind(frame,255),autumn(255));
             set(handles.greenCheck, 'Value', 0);
@@ -108,43 +110,9 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
             frame =  imgaussfilt(frame, 2);
         end
         
-%% Case, troligtvis ej använda
-%         if (get(handles.grayBox, 'Value') == 1)
-%             frame = rgb2gray(frame);
-%         end
-   
-                   %         frame = imadjust(frame,[0.3; 0.6],[0.0;1.0]);
-                   %         frame = flip(frame ,2);
+        pause(0.5) %  fps
         
-
-%         switch caseName
-%             case 'gaussian'
-%                 frame =  imgaussfilt(frame, 2);
-%             case 'derivative'
-%                 [~,frame] = imgradientxy(frame);
-%             case 'greenFilter'
-%                 frame = ind2rgb(gray2ind(frame,255),summer(255)); 
-%             case 'redFilter'
-%                 frame = ind2rgb(gray2ind(frame,255),autumn(255));
-%             case 'contrast'
-                
-                
-
-% %                 frame = adapthisteq(frame);
-% 
-
-%             case 'default'
-%                 
-                
-                %   frame = ind2rgb(gray2ind(frame,255),jet(255));
-                %     frame = ind2rgb(gray2ind(frame,255),summer(255)); %GREEN
-                %RED
-                
-                % imshow(rgbImage);
-                
-      %  end
-%%        
-        pause(0.1) % 5 fps
+%         get(gca,{'xlim','ylim'});  % Get axes limits.
         imshow(frame, 'Parent', snapFrame)
         %         Imaver = conv2(frame, aver);
         %         frame = butterworth(Imaver);
@@ -170,27 +138,14 @@ function varargout = Gui_OutputFcn(hObject, eventdata, handles)
     
     varargout{1} = handles.himage;
     
-    
-    
-    % function timerFunc(hObject, eventdata, handles)
-    %     global vid
-    %     global snapFrame
-    %     global timerWind
-    %
-    %     set(timerWind, 'String', num2str(get(hObject,'TasksExecuted')));
-    %     frame=uint8(getsnapshot(vid));
-    %     frame = rgb2gray(frame);
-    %
-    %     imshow(frame, 'Parent', snapFrame)
-    
-    
     % --- Executes on button press in stopButton.
 function stopButton_Callback(hObject, eventdata, handles)
     % hObject    handle to stopButton (see GCBO)
     % eventdata  reserved - to be defined in a future version of MATLAB
     % handles    structure with handles and user data (see GUIDATA)
     global vid
-    stop(vid);
+    start(vid);
+    
     
     
     % --- Executes on button press in gaussCheck.
@@ -200,83 +155,19 @@ function gaussCheck_Callback(hObject, eventdata, handles)
     % handles    structure with handles and user data (see GUIDATA)
     
     % Hint: get(hObject,'Value') returns toggle state of gaussCheck
-%     global caseName
-%     val = get(hObject,'Value');
-%     if val == 1
-%         caseName = 'gaussian';
-%     else
-%         caseName = 'default';
-%     end
-    
     
     % --- Executes on button press in derCheck.
 function derCheck_Callback(hObject, eventdata, handles)
-    % hObject    handle to derCheck (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
     
-    % Hint: get(hObject,'Value') returns toggle state of derCheck
-%     global caseName
-%     val = get(hObject,'Value')
-%     
-%     if val == 1
-%         caseName = 'derivative'
-%     else
-%         caseName = 'default';
-%     end
     
     % --- Executes on button press in contrastCheck.
 function contrastCheck_Callback(hObject, eventdata, handles)
-    % hObject    handle to contrastCheck (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
-    
-    % Hint: get(hObject,'Value') returns toggle state of contrastCheck
-%         global caseName
-%     val = get(hObject,'Value')
-%     
-%     if val == 1
-%         caseName = 'contrast'
-%     else
-%         caseName = 'default';
-%     end
-    
-    
-    
     
     % --- Executes on button press in redCheck.
 function redCheck_Callback(hObject, eventdata, handles)
-    % hObject    handle to redCheck (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
-    
-    % Hint: get(hObject,'Value') returns toggle state of redCheck
-%     global caseName
-%     val = get(hObject,'Value')
-%     
-%     if val == 1
-%         caseName = 'redFilter'
-%     else
-%         caseName = 'default';
-%     end
-    
     
     % --- Executes on button press in greenCheck.
 function greenCheck_Callback(hObject, eventdata, handles)
-    % hObject    handle to greenCheck (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
-    
-    % Hint: get(hObject,'Value') returns toggle state of greenCheck
-%     global caseName
-%     val = get(hObject,'Value')
-%     
-%     if val == 1
-%         caseName = 'greenFilter'
-%     else
-%         caseName = 'default';
-%     end
-    
     
     % --- Executes when user attempts to close Gui.
 function Gui_CloseRequestFcn(hObject, eventdata, handles)
@@ -288,14 +179,16 @@ function Gui_CloseRequestFcn(hObject, eventdata, handles)
     
     global vid
     stop(vid);
-    
     delete(hObject);
-
-
-% --- Executes during object creation, after setting all properties.
+    
+    
+    % --- Executes during object creation, after setting all properties.
 function cameraAxesFrames_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to cameraAxesFrames (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-% surf(handles.cameraAxesFrames);
-% Hint: place code in OpeningFcn to populate cameraAxesFrames
+    % hObject    handle to cameraAxesFrames (see GCBO)
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    empty - handles not created until after all CreateFcns called
+    % surf(handles.cameraAxesFrames);
+    % Hint: place code in OpeningFcn to populate cameraAxesFrames
+
+
+
