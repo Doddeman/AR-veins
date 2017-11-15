@@ -2,12 +2,9 @@
 
 function result = firstfilter(image)
 
-median = medfilt2(image);
+histeq = adapthisteq(image,'ClipLimit',0.015);
 
-ball = offsetstrel('ball',3,3);
-eroded = imerode(median,ball);
-
-gaussian = imgaussfilt(eroded,1);
+gaussian = imgaussfilt(histeq,2);
 
 badlight = im2double(gaussian);
 
@@ -24,9 +21,9 @@ binary = imbinarize(close, 0.95);
 
 invert = imcomplement(binary);
 
-removespeckle = bwareaopen(invert, 1000);
+removespeckle = bwareaopen(invert, 2000);
 
-result = gaussian;
+result = removespeckle;
 
-%imshow(removespeckle, [1 1 1; 0 0 1]);
+imshow(removespeckle, [1 1 1; 0 0 1]);
 end
