@@ -11,12 +11,19 @@ fill = imfill(median, 'holes');
 se = strel('diamond', 10);
 pic_end = imopen(fill, se);
 figure(1);
-subplot(2,2,1)
+subplot(2,3,1)
 imshow(image);
-subplot(2,2,2);
-imshow(pic_end);
-subplot(2,2,3);
+subplot(2,3,2)
+imshow(A);
+subplot(2,3,3)
+imshow(BA);
+subplot(2,3,4)
+imshow(median);
+subplot(2,3,5)
+imshow(fill);
+subplot(2,3,6)
 imshow(pic_end, [0 0 0; 1 0 0]);
+
 end
 
 
