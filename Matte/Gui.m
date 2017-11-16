@@ -22,7 +22,7 @@ function varargout = Gui(varargin)
     
     % Edit the above text to modify the response to help Gui
     
-    % Last Modified by GUIDE v2.5 13-Nov-2017 11:31:49
+    % Last Modified by GUIDE v2.5 15-Nov-2017 09:43:58
     
     % Begin initialization code - DO NOT EDIT
     gui_Singleton = 1;
@@ -56,14 +56,22 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
     handles.output = hObject;
     global vid
     global snapFrame
-
+    global frame
+    global keyPressed
+    global i
+    global j
+    global KEY_IS_PRESSED
+    
+    
+    j = 50;
+    i = 50;
+    
     set(gcf,'toolbar','figure');
     snapFrame = handles.cameraAxesFrames;
-         vid = videoinput('pointgrey', 1, 'F7_Mono8_1288x964_Mode0');
-%     vid = videoinput('winvideo',1);
+    %          vid = videoinput('pointgrey', 1, 'F7_Mono8_1288x964_Mode0');
+    vid = videoinput('winvideo',1);
     
     handles.himage = image(zeros(720,1280,3), 'Parent', handles.cameraAxesFrames);
-   
     
     % vid.frameGrabInterval = 5;
     vid.FramesPerTrigger = inf;
@@ -75,25 +83,30 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
     start(vid)
     preview(vid, handles.himage);
     
+    r= 0;
+    c= 0;
+    co=0;
+    ro=0;
+%     padDirr = 'pre';
+    
     
     while isrunning(vid)
         
         frame=uint8(getsnapshot(vid));
+        prePad = [c r];
+%         postPad = [co ro];
         
         
-%         frame = rgb2gray(frame);
-      
-       
+        frame = rgb2gray(frame);
         
-%         set(gca,{'xlim','ylim'},L)
         if (get(handles.redCheck, 'Value') == 1)
-            frame = firstfilter(frame);
-            
+            frame = ind2rgb(gray2ind(frame,255),autumn(255));
+            set(handles.greenCheck, 'Value', 0);
         end
         
         if (get(handles.greenCheck, 'Value') == 1)
             frame = ind2rgb(gray2ind(frame,255), summer(255));
-%             set(handles.redCheck, 'Value', 0);
+            set(handles.redCheck, 'Value', 0);
         end
         
         if (get(handles.gaussCheck, 'Value') == 1)
@@ -108,22 +121,143 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
             frame = histeq(frame); %fan rätt bra
             frame = imadjust(frame, [0 1],[0 0.7]);
             frame =  imgaussfilt(frame, 2);
+            
         end
         
-        pause(0.1) %  fps
+        if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'rightarrow'))
+            %             i = i+20;
+            r = r +20;
+            % if ro >20
+            %     ro = ro-20;
+            % end
+            
+        end
+        if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'leftarrow'))
+            %             i = i+20;
+            r = r -20;
+            % if r>20
+            % r = r-20;
+            % end
+        end
+        if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'uparrow'))
+            %             j = j+20;
+            % c = c +20;
+            c = c+20;
+            
+        end
+        if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'downarrow'))
+            %             j = j+20;
+            c = c -20;
+            
+        end
         
-%         get(gca,{'xlim','ylim'});  % Get axes limits.
-        imshow(frame, 'Parent', snapFrame)
-        %         Imaver = conv2(frame, aver);
-        %         frame = butterworth(Imaver);
-        % frame = filter(B,A,frame);
-        %       frame = conv2(frame, boxKernel, 'same');
-        %         imshow(frame, 'Parent', snapFrame)
+        pause(0.5) %  fps
+        
+        %         if (strcmpi(keyPressed,'rightarrow'))
+        %             padSize = [abs(c-co) abs(r-ro)]
+        %             cropRect = [1 1 size(frame,2)-abs(r-ro)-1 size(frame,1)-c-1];
+        %             frame = imcrop(frame, cropRect);
+        %             if r >= ro
+        %                 frame = padarray(frame, padSize,1, 'pre');
+        %             else
+        %                 frame = padarray(frame, padSize,1, 'post');
+        %             end
+        %
+        %         end
+        %         if (strcmpi(keyPressed,'leftarrow'))
+        %             padSize = [abs(c-co) abs(r-ro)]
+        %             cropRect = [abs(r-ro) 1 size(frame,2)-(1) size(frame,1)-1];
+        %             frame = imcrop(frame, cropRect);
+        %             if r >= ro
+        %                 frame = padarray(frame, padSize,1, 'pre');
+        %             else
+        %                 frame = padarray(frame, padSize,1, 'post');
+        %             end
+        %         end
+        %
+        %         if (strcmpi(keyPressed,'uparrow'))
+        %             frame = imcrop(frame, [ro co 1280-r 720-c]);
+        %             frame = padarray(frame, prePad,1, 'pre');
+        %             frame = padarray(frame, postPad,1, 'post');
+        %             (size(frame))
+        %         end
+        %
+        %         if (strcmpi(keyPressed,'downarrow'))
+        %             frame = imcrop(frame, [ro co 1280-r 720-c]);
+        %             frame = padarray(frame, prePad,1, 'pre');
+        %             frame = padarray(frame, postPad,1, 'post');
+        %             (size(frame))
+        %         end
+        
+        
+        if (strcmpi(keyPressed,'rightarrow'))
+            cropRect = [ro co 1280-(abs(r)) 720-c]
+            if(r<0)
+                cropRect = [abs(r) co 1280 720-c]
+                padDirr = 'post';
+            else
+                padDirr = 'pre';
+            end          
+            frame = imcrop(frame, cropRect);
+            frame = padarray(frame, abs(prePad),1, padDirr);
+            (size(frame))
+        end
+        
+        if (strcmpi(keyPressed,'leftarrow'))
+            cropRect = [ro co 1280-(abs(r)) 720-c]           
+            if (r<0)
+                cropRect = [abs(r) co 1280 720-c]
+                padDirr = 'post';
+            else
+                padDirr = 'pre';
+            end           
+            frame = imcrop(frame, cropRect);
+            frame = padarray(frame, abs(prePad),1, padDirr);
+            (size(frame))
+        end
+        
+        if (strcmpi(keyPressed,'uparrow'))
+%             cropRect = [ro co 1280-(abs(r)) 720]           
+%             if (c<0)
+%                 cropRect = [abs(r) abs(c) 1280 720]
+%                 padDirr = 'post';
+%             else
+%                 padDirr = 'pre';
+%             end     
+%             frame = imcrop(frame, cropRect);
+%             frame = padarray(frame, abs(prePad),1, padDirr);
+%             (size(frame))
+        end
+        
+        if (strcmpi(keyPressed,'downarrow'))
+%             cropRect = [ro co 1280-(abs(r)) 720]           
+%             if (c<0)
+%                 cropRect = [abs(r) c 1280 720-c]
+%                 padDirr = 'post';
+%             else
+%                 padDirr = 'pre';
+%             end     
+%             frame = imcrop(frame, cropRect);
+%             frame = padarray(frame, abs(prePad),1, padDirr);
+%             (size(frame))
+        end
+        
+        
+        
+        
+        imshow(frame, 'Parent', snapFrame);
+        
+        
+        
+        
     end
     
     
     % Update handles structure
     guidata(hObject, handles);
+    
+    
+    
     
     
     % --- Outputs from this function are returned to the command line.
@@ -189,6 +323,36 @@ function cameraAxesFrames_CreateFcn(hObject, eventdata, handles)
     % handles    empty - handles not created until after all CreateFcns called
     % surf(handles.cameraAxesFrames);
     % Hint: place code in OpeningFcn to populate cameraAxesFrames
-
-
-
+    
+    
+    
+    % --- Executes on key press with focus on Gui or any of its controls.
+function Gui_WindowKeyPressFcn(hObject, eventdata, handles)
+    % hObject    handle to Gui (see GCBO)
+    % eventdata  structure with the following fields (see MATLAB.UI.FIGURE)
+    %	Key: name of the key that was pressed, in lower case
+    %	Character: character interpretation of the key(s) that was pressed
+    %	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
+    % handles    structure with handles and user data (see GUIDATA)
+    
+    global keyPressed
+    global KEY_IS_PRESSED
+    keyPressed = eventdata.Key;
+    KEY_IS_PRESSED = 1;
+    
+    
+    % --- Executes on key release with focus on Gui or any of its controls.
+function Gui_WindowKeyReleaseFcn(hObject, eventdata, handles)
+    % hObject    handle to Gui (see GCBO)
+    % eventdata  structure with the following fields (see MATLAB.UI.FIGURE)
+    %	Key: name of the key that was released, in lower case
+    %	Character: character interpretation of the key(s) that was released
+    %	Modifier: name(s) of the modifier key(s) (i.e., control, shift) released
+    % handles    structure with handles and user data (see GUIDATA)
+    
+    global KEY_IS_PRESSED
+    % global keyRelease
+    % determine the key that was pressed
+    %  global keyPressed
+    %  keyRelease = eventdata.Key;
+    KEY_IS_PRESSED = 0;
