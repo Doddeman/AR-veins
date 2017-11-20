@@ -58,13 +58,9 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
     global snapFrame
     global frame
     global keyPressed
-    global i
-    global j
     global KEY_IS_PRESSED
     
     
-    j = 50;
-    i = 50;
     
     set(gcf,'toolbar','figure');
     snapFrame = handles.cameraAxesFrames;
@@ -83,20 +79,18 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
     start(vid)
     preview(vid, handles.himage);
     
-    r= 0;
-    c= 0;
+    r= 1;
+    c= 1;
     co=0;
     ro=0;
-%     padDirr = 'pre';
+    zoom = 0.5;
     
+    
+    tic
     
     while isrunning(vid)
         
         frame=uint8(getsnapshot(vid));
-        prePad = [c r];
-%         postPad = [co ro];
-        
-        
         frame = rgb2gray(frame);
         
         if (get(handles.redCheck, 'Value') == 1)
@@ -125,129 +119,62 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
         end
         
         if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'rightarrow'))
-            %             i = i+20;
             r = r +20;
-            % if ro >20
-            %     ro = ro-20;
-            % end
-            
         end
         if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'leftarrow'))
-            %             i = i+20;
             r = r -20;
-            % if r>20
-            % r = r-20;
-            % end
         end
         if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'uparrow'))
-            %             j = j+20;
-            % c = c +20;
-            c = c+20;
-            
+            c = c-20;
         end
         if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'downarrow'))
-            %             j = j+20;
-            c = c -20;
-            
+            c = c +20;
         end
         
-        pause(0.5) %  fps
         
-        %         if (strcmpi(keyPressed,'rightarrow'))
-        %             padSize = [abs(c-co) abs(r-ro)]
-        %             cropRect = [1 1 size(frame,2)-abs(r-ro)-1 size(frame,1)-c-1];
-        %             frame = imcrop(frame, cropRect);
-        %             if r >= ro
-        %                 frame = padarray(frame, padSize,1, 'pre');
-        %             else
-        %                 frame = padarray(frame, padSize,1, 'post');
-        %             end
-        %
-        %         end
-        %         if (strcmpi(keyPressed,'leftarrow'))
-        %             padSize = [abs(c-co) abs(r-ro)]
-        %             cropRect = [abs(r-ro) 1 size(frame,2)-(1) size(frame,1)-1];
-        %             frame = imcrop(frame, cropRect);
-        %             if r >= ro
-        %                 frame = padarray(frame, padSize,1, 'pre');
-        %             else
-        %                 frame = padarray(frame, padSize,1, 'post');
-        %             end
-        %         end
-        %
-        %         if (strcmpi(keyPressed,'uparrow'))
-        %             frame = imcrop(frame, [ro co 1280-r 720-c]);
-        %             frame = padarray(frame, prePad,1, 'pre');
-        %             frame = padarray(frame, postPad,1, 'post');
-        %             (size(frame))
-        %         end
-        %
-        %         if (strcmpi(keyPressed,'downarrow'))
-        %             frame = imcrop(frame, [ro co 1280-r 720-c]);
-        %             frame = padarray(frame, prePad,1, 'pre');
-        %             frame = padarray(frame, postPad,1, 'post');
-        %             (size(frame))
-        %         end
-        
-        
-        if (strcmpi(keyPressed,'rightarrow'))
-            cropRect = [ro co 1280-(abs(r)) 720-c]
-            if(r<0)
-                cropRect = [abs(r) co 1280 720-c]
-                padDirr = 'post';
-            else
-                padDirr = 'pre';
-            end          
+        if(r<0 && c<0)
+            cropRect = [abs(r) abs(c) 1280 720];
             frame = imcrop(frame, cropRect);
-            frame = padarray(frame, abs(prePad),1, padDirr);
-            (size(frame))
+            frame = padarray(frame, [abs(c) abs(r)],1, 'post');
         end
-        
-        if (strcmpi(keyPressed,'leftarrow'))
-            cropRect = [ro co 1280-(abs(r)) 720-c]           
-            if (r<0)
-                cropRect = [abs(r) co 1280 720-c]
-                padDirr = 'post';
-            else
-                padDirr = 'pre';
-            end           
+        if (r<0 && c>0)
+            cropRect = [abs(r) co 1280 720-abs(c)];
             frame = imcrop(frame, cropRect);
-            frame = padarray(frame, abs(prePad),1, padDirr);
-            (size(frame))
+            frame = padarray(frame, [abs(c) 0],1, 'pre');
+            frame = padarray(frame, [0 abs(r)],1, 'post');
         end
-        
-        if (strcmpi(keyPressed,'uparrow'))
-%             cropRect = [ro co 1280-(abs(r)) 720]           
-%             if (c<0)
-%                 cropRect = [abs(r) abs(c) 1280 720]
-%                 padDirr = 'post';
-%             else
-%                 padDirr = 'pre';
-%             end     
-%             frame = imcrop(frame, cropRect);
-%             frame = padarray(frame, abs(prePad),1, padDirr);
-%             (size(frame))
+        if (r>0 && c<0)
+            cropRect = [ro abs(c) 1280-abs(r) 720];
+            frame = imcrop(frame, cropRect);
+            frame = padarray(frame, [abs(c) 0],1, 'post');
+            frame = padarray(frame, [0 abs(r)],1, 'pre');
         end
-        
-        if (strcmpi(keyPressed,'downarrow'))
-%             cropRect = [ro co 1280-(abs(r)) 720]           
-%             if (c<0)
-%                 cropRect = [abs(r) c 1280 720-c]
-%                 padDirr = 'post';
-%             else
-%                 padDirr = 'pre';
-%             end     
-%             frame = imcrop(frame, cropRect);
-%             frame = padarray(frame, abs(prePad),1, padDirr);
-%             (size(frame))
+        if (r>0 && c>0)
+            cropRect = [ro co 1280-abs(r) 720-abs(c)];
+            frame = imcrop(frame, cropRect);
+            frame = padarray(frame, [abs(c) abs(r)],1, 'pre');
+        end
+
+        if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'z'))
+            zoom = zoom + 20;
+        end
+        if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'x'))
+            zoom = zoom - 20;
         end
         
         
-        
-        
-        imshow(frame, 'Parent', snapFrame);
-        
-        
+        pause(0.1) %  fps
+%         frame = imresize(frame, zoom);
+        frame = frame(zoom:end-zoom,zoom*2:end-zoom*2);
+%            frame = truesize(frame);zx
+
+
+        size(frame)
+%         imshow(frame, 'Parent', snapFrame);
+           imshow(frame, 'Parent', snapFrame);
+%            truesize
+%         
+%         toc 
         
         
     end
