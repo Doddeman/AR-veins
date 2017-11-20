@@ -74,9 +74,28 @@ subplot(1,2,1)
 imshow(BW3)
 subplot(1,2,2)
 imshow(medfilt2(BW3))
+% 
+% figure(6)
+% subplot(1,2,1)
+% imhist(uint8(Original), 128)
+% subplot(1,2,2)
+% imhist(uint8(A), 128)
 
-figure(6)
+figure(7)
 subplot(1,2,1)
-imhist(uint8(Original), 128)
+imshow(D,[])
 subplot(1,2,2)
-imhist(uint8(A), 128)
+imshow(D)
+
+octa = strel('octagon', 3);
+hast = imdilate(BW3,octa);
+remove = bwareaopen(hast, 800);
+
+figure(8)
+subplot(1,2,1)
+imshow(hast)
+subplot(1,2,2)
+imshow(remove)
+
+
+
