@@ -1,6 +1,19 @@
 %mitt förslag 1
 
 function result = firstfilter(image)
+% 
+% se = strel('disk',5);
+% 
+% hairs = imbothat(image,se);
+% BW = hairs > 15;
+% 
+% BW2 = imdilate(BW,strel('disk',2));
+% 
+% 
+% 
+% replacedImage = roifill(image,BW2);
+% 
+% result = replacedImage;
 
 histeq = adapthisteq(image,'ClipLimit',0.015);
 
@@ -23,7 +36,17 @@ invert = imcomplement(binary);
 
 removespeckle = bwareaopen(invert, 2000);
 
-result = removespeckle;
+   result = removespeckle;
 
 imshow(removespeckle, [1 1 1; 0 0 1]);
+
+water = bwdist(~invert);
+
+imshow(water,[],'InitialMagnification','fit');
+
+g = imgaussfilt(water, 1);
+
+removespeckle2 = bwareaopen(g, 1000);
+
+imshow(removespeckle2)
 end

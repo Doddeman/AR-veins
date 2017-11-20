@@ -29,8 +29,6 @@ imshow(lightok)
 title('lightok')
 
 contrasty = imadjust(lightok);
-figure(3)
-imshow(contrasty)
 
 sep = strel('octagon',3);
 close = imclose(contrasty,sep);
@@ -58,10 +56,27 @@ subplot(2,3,5)
 imshow(removespeckle)
 title('removespeckle')
 subplot(2,3,6)
-imshow(removespeckle, [1 1 1; 0 0 1])
+imshow(removespeckle, [0 0 0; 1 0 0])
 title('final result')
 
+D = bwdist(~invert);
+figure(4)
+subplot(1,2,1)
+imshow(D,[],'InitialMagnification','fit')
+title('Distance transform')
+subplot(1,2,2)
+imshow((bwdist(~removespeckle)), [], 'InitialMagnification', 'fit')
+BW2 = bwmorph(D,'skel',Inf);
+BW3 = bwmorph(invert,'skel',Inf);
 
+figure(5)
+subplot(1,2,1)
+imshow(BW3)
+subplot(1,2,2)
+imshow(medfilt2(BW3))
 
-
-
+figure(6)
+subplot(1,2,1)
+imhist(uint8(Original), 128)
+subplot(1,2,2)
+imhist(uint8(A), 128)
