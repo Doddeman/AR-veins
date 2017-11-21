@@ -22,7 +22,7 @@ function varargout = Gui(varargin)
     
     % Edit the above text to modify the response to help Gui
     
-    % Last Modified by GUIDE v2.5 15-Nov-2017 09:43:58
+    % Last Modified by GUIDE v2.5 21-Nov-2017 13:42:41
     
     % Begin initialization code - DO NOT EDIT
     gui_Singleton = 1;
@@ -54,13 +54,12 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
     
     % Choose default command line output for Gui
     handles.output = hObject;
+    
     global vid
     global snapFrame
     global frame
     global keyPressed
     global KEY_IS_PRESSED
-    
-    
     
     set(gcf,'toolbar','figure');
     snapFrame = handles.cameraAxesFrames;
@@ -78,21 +77,14 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
     
     start(vid)
     preview(vid, handles.himage);
-    
-    r= 1;
-    c= 1;
-    co=0;
-    ro=0;
-    zoom = 0.5;
-    
-    
-    tic
-    
+
+    posVec = get(handles.cameraAxesFrames, 'Position');
+
     while isrunning(vid)
-        
+
         frame=uint8(getsnapshot(vid));
         frame = rgb2gray(frame);
-        
+        %% Filter
         if (get(handles.redCheck, 'Value') == 1)
             frame = ind2rgb(gray2ind(frame,255),autumn(255));
             set(handles.greenCheck, 'Value', 0);
@@ -114,67 +106,49 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
         if (get(handles.contrastCheck, 'Value') == 1)
             frame = histeq(frame); %fan rätt bra
             frame = imadjust(frame, [0 1],[0 0.7]);
-            frame =  imgaussfilt(frame, 2);
-            
+            frame =  imgaussfilt(frame, 2);  
         end
         
-        if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'rightarrow'))
-            r = r +20;
+        %% Flytta runt bilden på d, a, w och s
+        if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'d'))           
+            posVec(1) = posVec(1) + 0.02;
         end
-        if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'leftarrow'))
-            r = r -20;
+        if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'a'))
+            posVec(1) = posVec(1) - 0.02;
         end
-        if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'uparrow'))
-            c = c-20;
+        if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'w'))
+            posVec(2) = posVec(2) + 0.02;
         end
-        if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'downarrow'))
-            c = c +20;
+        if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'s'))
+            posVec(2) = posVec(2) - 0.02;
         end
-        
-        
-        if(r<0 && c<0)
-            cropRect = [abs(r) abs(c) 1280 720];
-            frame = imcrop(frame, cropRect);
-            frame = padarray(frame, [abs(c) abs(r)],1, 'post');
-        end
-        if (r<0 && c>0)
-            cropRect = [abs(r) co 1280 720-abs(c)];
-            frame = imcrop(frame, cropRect);
-            frame = padarray(frame, [abs(c) 0],1, 'pre');
-            frame = padarray(frame, [0 abs(r)],1, 'post');
-        end
-        if (r>0 && c<0)
-            cropRect = [ro abs(c) 1280-abs(r) 720];
-            frame = imcrop(frame, cropRect);
-            frame = padarray(frame, [abs(c) 0],1, 'post');
-            frame = padarray(frame, [0 abs(r)],1, 'pre');
-        end
-        if (r>0 && c>0)
-            cropRect = [ro co 1280-abs(r) 720-abs(c)];
-            frame = imcrop(frame, cropRect);
-            frame = padarray(frame, [abs(c) abs(r)],1, 'pre');
-        end
-
+      
+        %% Ändra storlek på bild med z och x
         if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'z'))
-            zoom = zoom + 20;
+            posVec(1) = posVec(1)+0.02*0.5;
+            posVec(2) = posVec(2)+0.02*0.5;
+            posVec(3) = posVec(3)-0.02;
+            posVec(4) = posVec(4)-0.02;
         end
         if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'x'))
-            zoom = zoom - 20;
+            posVec(1) = posVec(1)-0.02*0.5;
+            posVec(2) = posVec(2)-0.02*0.5;
+            posVec(3) = posVec(3)+0.02;
+            posVec(4) = posVec(4)+0.02;
         end
         
+        set(handles.cameraAxesFrames, 'outerposition', posVec)
         
-        pause(0.1) %  fps
-%         frame = imresize(frame, zoom);
-        frame = frame(zoom:end-zoom,zoom*2:end-zoom*2);
-%            frame = truesize(frame);zx
-
-
-        size(frame)
-%         imshow(frame, 'Parent', snapFrame);
-           imshow(frame, 'Parent', snapFrame);
-%            truesize
-%         
-%         toc 
+        %% Zoom
+        zoomVar = 1+5*get(handles.slider2, 'value');
+        zoom(zoomVar);
+        
+        %% Fps
+        pause(0.1) % fps
+        
+        %% Display
+        imshow(frame, 'Parent', snapFrame);
+        
         
         
     end
@@ -283,3 +257,47 @@ function Gui_WindowKeyReleaseFcn(hObject, eventdata, handles)
     %  global keyPressed
     %  keyRelease = eventdata.Key;
     KEY_IS_PRESSED = 0;
+
+
+% --- Executes on slider movement.
+function slider1_Callback(hObject, eventdata, handles)
+% hObject    handle to slider1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+
+
+% --- Executes during object creation, after setting all properties.
+function slider1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to slider1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+% --- Executes on slider movement.
+function slider2_Callback(hObject, eventdata, handles)
+% hObject    handle to slider2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+
+
+% --- Executes during object creation, after setting all properties.
+function slider2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to slider2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
