@@ -1,8 +1,7 @@
-%mitt förslag 1
+Originalet = imread('jeppacut.png');
+Original = rgb2gray(Originalet);
 
-function result = firstfilter(image)
-
-histeq = adapthisteq(image,'ClipLimit',0.015);
+histeq = adapthisteq(Original,'ClipLimit',0.015);
 
 gaussian = imgaussfilt(histeq,2);
 
@@ -24,15 +23,13 @@ invert = imcomplement(binary);
 
 removespeckle = bwareaopen(invert, 1700);
 
-skeleton = bwmorph(removespeckle,'skel',Inf);
+skeleton = bwmorph(invert,'skel', Inf);
+
+figure(3)
+imshow(skeleton)
 
 octa = strel('octagon', 3);
-
 fill = imdilate(skeleton,octa);
-
 final = bwareaopen(fill, 800);
 
-result = final;
-
 imshow(final, [1 1 1; 0 0 1])
-end
