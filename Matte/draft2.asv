@@ -1,4 +1,4 @@
-Originalet = imread('johanna1cropped.png');
+Originalet = imread('jeppacut.png');
 Original = rgb2gray(Originalet);
 
 histeq = adapthisteq(Original,'ClipLimit',0.015);
@@ -43,5 +43,5 @@ imshow(final2)
 
 %imshow(finaltjock, [0 0 0; 0 1 0.97])
 
-imshow(uint8(final2), [0 0 0; 0 1 0.97])
+imshow(final2, [0 0 0; 0 1 0.97])
 

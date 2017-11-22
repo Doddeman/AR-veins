@@ -25,7 +25,7 @@ close = imclose(contrasty,sep);
 %result = close;
 
 binary = imbinarize(close, 0.8);
-%result = binary;
+result = binary;
 
 invert = imcomplement(binary);
 %result = invert;
@@ -41,9 +41,17 @@ octa = strel('octagon', 3);
 fill = imdilate(skeleton,octa);
 %result = fill;
 
-final = bwareaopen(fill, 800);
+final = bwareaopen(removespeckle, 800);
 
-result = final;
+%result = removespeckle;
 
-imshow(final, [1 1 1; 0 0 1])
+octa = strel('octagon', 3);
+%octa2 = strel('octagon', 9);
+
+skeleton = bwmorph(invert,'skel', Inf);
+
+fill = imdilate(skeleton,octa);
+final = bwareaopen(fill, 700);
+
+imshow(final, [0 0 0; 0 1 0.97]);
 end

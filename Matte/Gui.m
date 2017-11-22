@@ -22,7 +22,7 @@ function varargout = Gui(varargin)
     
     % Edit the above text to modify the response to help Gui
     
-    % Last Modified by GUIDE v2.5 21-Nov-2017 17:15:51
+    % Last Modified by GUIDE v2.5 22-Nov-2017 15:35:30
     
     % Begin initialization code - DO NOT EDIT
     gui_Singleton = 1;
@@ -81,8 +81,8 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
     preview(vid, handles.himage);
     
     % Inital alignment variables
-    posVec = [0.0604 -0.0579 1.0492 1.0984];
-    zoomVar = 1.2;
+    posVec = [0.3104 0.1121 0.5892 0.6384];
+    zoomVar = 2.05;
    
     
     
@@ -107,7 +107,8 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
         
         %% Filter
         if (get(handles.redCheck, 'Value') == 1)
-            frame = ind2rgb(gray2ind(frame,255),autumn(255));
+            %frame = ind2rgb(gray2ind(frame,255),autumn(255));
+            frame = firstfilter(frame);
             set(handles.greenCheck, 'Value', 0);
         end
         
@@ -270,3 +271,12 @@ function Gui_WindowKeyReleaseFcn(hObject, eventdata, handles)
     KEY_IS_PRESSED = 0;
     
     
+
+
+% --- Executes on button press in gggg.
+function gggg_Callback(hObject, eventdata, handles)
+% hObject    handle to gggg (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of gggg

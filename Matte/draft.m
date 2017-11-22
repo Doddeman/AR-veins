@@ -1,6 +1,6 @@
 %mitt förslag 1
 
-Originalet = imread('jeppacut.png');
+Originalet = imread('johanna1cropped.png');
 Original = rgb2gray(Originalet);
 
 hist = adapthisteq(Original,'ClipLimit',0.015);

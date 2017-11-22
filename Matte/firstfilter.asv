@@ -41,9 +41,22 @@ octa = strel('octagon', 3);
 fill = imdilate(skeleton,octa);
 %result = fill;
 
-final = bwareaopen(fill, 800);
+final = bwareaopen(removespeckle, 800);
 
-result = final;
+%result = removespeckle;
 
-imshow(final, [1 1 1; 0 0 1])
+octa = strel('octagon', 3);
+%octa2 = strel('octagon', 9);
+
+skeleton = bwmorph(invert,'skel', Inf);
+
+fill = imdilate(skeleton,octa);
+%final = bwareaopen(fill, 500);
+mask = imdilate(final, octa);
+
+final2 = invert.*mask;
+
+result = mask;
+
+imshow(skeleton, [0 0 0; 0 1 0.97]);
 end
