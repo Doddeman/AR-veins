@@ -25,11 +25,36 @@ removespeckle = bwareaopen(invert, 1700);
 
 skeleton = bwmorph(invert,'skel', Inf);
 
-figure(3)
-imshow(skeleton)
-
 octa = strel('octagon', 3);
+octa2 = strel('octagon', 9);
 fill = imdilate(skeleton,octa);
 final = bwareaopen(fill, 800);
+finaltjock = imdilate(final, octa2);
 
-imshow(final, [1 1 1; 0 0 1])
+final2 = invert.*finaltjock;
+
+figure(200)
+subplot(1,3,1)
+imshow(invert)
+subplot(1,3,2)
+imshow(finaltjock)
+subplot(1,3,3)
+imshow(final2)
+
+imshow(finaltjock, [0 0 0; 0 1 0.97])
+
+
+
+imshow(final2, [0 0 0; 0 1 0.97])
+
+P = ones(406,543);
+
+testy = invert.*P;
+
+figure(1)
+subplot(1,3,1)
+imshow(invert)
+subplot(1,3,2)
+imshow(P)
+subplot(1,3,3)
+imshow(testy)

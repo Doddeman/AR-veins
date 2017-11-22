@@ -9,22 +9,18 @@ gaussian = imgaussfilt(hist,2);
 
 badlight = im2double(gaussian);
 
-se = strel('diamond', 20);
+se = strel('diamond', 15);
 
 %# Removes uneven lighting and enhances contrast.
-lightok = imdivide(badlight,imclose(badlight,se));
+lightok = imdivide(badlight,imopen(badlight,se));
 
 figure(101)
 subplot(1,3,1)
 imshow(badlight)
-title('Unevenlight')
 subplot(1,3,2)
-imshow(imclose(badlight,se))
-
+imshow(imopen(badlight,se))
 subplot(1,3,3)
-imshow(lightok)
-
-maybe = imadjust(imopen(badlight,se));
+imshow(imgaussfilt(uint8((imadjust(imopen(badlight,se))))),2)
 
 figure(1)
 subplot(2,2,1)
@@ -68,7 +64,7 @@ subplot(2,3,5)
 imshow(removespeckle)
 title('removespeckle')
 subplot(2,3,6)
-imshow(removespeckle, [0 0 0; 0 1 0.97])
+imshow(removespeckle, [0 0 0; 1 0 0])
 title('final result')
 
 % D = bwdist(~invert);
