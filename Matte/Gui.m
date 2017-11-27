@@ -22,7 +22,7 @@ function varargout = Gui(varargin)
     
     % Edit the above text to modify the response to help Gui
     
-    % Last Modified by GUIDE v2.5 22-Nov-2017 15:35:30
+    % Last Modified by GUIDE v2.5 27-Nov-2017 09:35:22
     
     % Begin initialization code - DO NOT EDIT
     gui_Singleton = 1;
@@ -63,10 +63,10 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
      
     set(gcf, 'toolbar', 'none');
     snapFrame = handles.cameraAxesFrames;
-    vid = videoinput('pointgrey', 1, 'F7_Mono8_1288x964_Mode0');
+%     vid = videoinput('pointgrey', 1, 'F7_Mono8_1288x964_Mode0');
     
     %WEBCAM
-    %     vid = videoinput('winvideo',1); 
+        vid = videoinput('winvideo',1); 
     %     handles.himage = image(zeros(720,1280,3), 'Parent', handles.cameraAxesFrames);
     
     handles.himage = image(zeros(964,1288,3), 'Parent', handles.cameraAxesFrames);
@@ -83,7 +83,8 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
     % Inital alignment variables
     posVec = [0.3104 0.1121 0.5892 0.6384];
     zoomVar = 2.05;
-   
+    set(handles.greenCheck,'Visible','off');
+    set(handles.redCheck,'Visible','off');
     
     
     while isrunning(vid)
@@ -270,13 +271,19 @@ function Gui_WindowKeyReleaseFcn(hObject, eventdata, handles)
     %  keyRelease = eventdata.Key;
     KEY_IS_PRESSED = 0;
     
-    
+   
 
 
-% --- Executes on button press in gggg.
-function gggg_Callback(hObject, eventdata, handles)
-% hObject    handle to gggg (see GCBO)
+
+
+% --- Executes on button press in tech_button.
+function tech_button_Callback(hObject, eventdata, handles)
+% hObject    handle to tech_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of gggg
+answer = inputdlg('Enter Password:')
+if (strcmp(answer, '1111'))
+    set(handles.greenCheck,'Visible','on');
+    set(handles.redCheck,'Visible','on');
+    set(handles.tech_button,'string','Clinician','enable','on');
+end
