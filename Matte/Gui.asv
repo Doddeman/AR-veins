@@ -197,6 +197,7 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
         if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'z'))
             zoomVar = zoomVar + 0.05;
         end
+
         
         zoom(zoomVar); 
         pause(0.2) % "fps"
@@ -210,8 +211,10 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
         
     end
     
+    
     % Update handles structure
     guidata(hObject, handles);
+    
     
     %% Callbacks
     % --- Outputs from this function are returned to the command line.
