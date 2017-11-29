@@ -22,7 +22,7 @@ function varargout = Gui(varargin)
     
     % Edit the above text to modify the response to help Gui
     
-    % Last Modified by GUIDE v2.5 27-Nov-2017 13:40:46
+    % Last Modified by GUIDE v2.5 29-Nov-2017 10:20:50
     
     % Begin initialization code - DO NOT EDIT
     gui_Singleton = 1;
@@ -61,13 +61,13 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
     global frame
     
     KEY_IS_PRESSED = 0;
-     
+    
     set(gcf, 'toolbar', 'none');
     snapFrame = handles.cameraAxesFrames;
-%     vid = videoinput('pointgrey', 1, 'F7_Mono8_1288x964_Mode0');
+    %     vid = videoinput('pointgrey', 1, 'F7_Mono8_1288x964_Mode0');
     
     %WEBCAM
-        vid = videoinput('winvideo',1); 
+    vid = videoinput('winvideo',1);
     %     handles.himage = image(zeros(720,1280,3), 'Parent', handles.cameraAxesFrames);
     
     handles.himage = image(zeros(964,1288,3), 'Parent', handles.cameraAxesFrames);
@@ -96,15 +96,17 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
     set(handles.speckSlider,'Visible','off');
     set(handles.thresText,'Visible','off');
     set(handles.speckText,'Visible','off');
+    set(handles.skelCheck,'Visible','off');
     
     se = strel('diamond', 20);
     sep = strel('octagon',3);
-
+    
     
     while isrunning(vid)
         t = tic;
         
         frame=uint8(getsnapshot(vid));
+        
         % Webcam, can be removed later
         if size(frame, 3) == 3
             frame = rgb2gray(frame);
@@ -136,7 +138,11 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
             frame = imclose(frame,sep);
             frame = imbinarize(frame, get(handles.binSlider, 'Value'));
             frame = imcomplement(frame);
-            frame = im2double(bwareaopen(frame, 2000*get(handles.speckSlider, 'Value')));
+            frame = im2double(bwareaopen(frame, round(2000*get(handles.speckSlider, 'Value'))));
+        end
+        
+        if (get(handles.skelCheck, 'Value') == 1)
+            frame =  bwmorph(frame,'skel',round(1*get(handles.skel_slider, 'Value')));
         end
         
         if (get(handles.greenCheck, 'Value') == 1)
@@ -144,7 +150,7 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
             frame = ind2rgb(frame, [0 0 0; 0 1 0]);
             set(handles.turqCheck, 'Value', 0);
         end
-
+        
         if (get(handles.turqCheck, 'Value') == 1)
             frame=uint8(frame);
             frame = ind2rgb(frame, [0 0 0; 0 1 0.97]);
@@ -198,7 +204,7 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
             zoomVar = zoomVar + 0.05;
         end
         
-        zoom(zoomVar); 
+        zoom(zoomVar);
         pause(0.2) % "fps"
         
         %% Display
@@ -225,7 +231,7 @@ function varargout = Gui_OutputFcn(hObject, eventdata, handles)
     % handles.output = hObject;
     
     varargout{1} = handles.himage;
-   
+    
 function lightCheck_Callback(hObject, eventdata, handles)
     % hObject    handle to lightCheck (see GCBO)
     % eventdata  reserved - to be defined in a future version of MATLAB
@@ -285,38 +291,36 @@ function Gui_WindowKeyReleaseFcn(hObject, eventdata, handles)
     % handles    structure with handles and user data (see GUIDATA)
     
     global KEY_IS_PRESSED
-    % global keyRelease
-    % determine the key that was pressed
-    %  global keyPressed
-    %  keyRelease = eventdata.Key;
     KEY_IS_PRESSED = 0;
-
-% --- Executes on button press in tech_button.
+    
+    % --- Executes on button press in tech_button.
 function tech_button_Callback(hObject, eventdata, handles)
-% hObject    handle to tech_button (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-answer = inputdlg('Enter Password:')
-if (strcmp(answer, '1111'))
-    set(handles.greenCheck,'Visible','on');
-    set(handles.turqCheck,'Visible','on');
-    set(handles.binCheck,'Visible','on');
-    set(handles.lightCheck,'Visible','on');
-    set(handles.histeqCheck,'Visible','on');
-    set(handles.binSlider,'Visible','on');
-    set(handles.histeqSlider,'Visible','on');
-    set(handles.speckSlider,'Visible','on');
-    set(handles.thresText,'Visible','on');
-    set(handles.speckText,'Visible','on');
-    set(handles.invCheck,'Visible','on');
-end
-
-% --- Executes on button press in clin_button.
+    % hObject    handle to tech_button (see GCBO)
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    structure with handles and user data (see GUIDATA)
+    answer = inputdlg('Enter Password:')
+    if (strcmp(answer, '1111'))
+        set(handles.greenCheck,'Visible','on');
+        set(handles.turqCheck,'Visible','on');
+        set(handles.binCheck,'Visible','on');
+        set(handles.lightCheck,'Visible','on');
+        set(handles.histeqCheck,'Visible','on');
+        set(handles.binSlider,'Visible','on');
+        set(handles.histeqSlider,'Visible','on');
+        set(handles.speckSlider,'Visible','on');
+        set(handles.thresText,'Visible','on');
+        set(handles.speckText,'Visible','on');
+        set(handles.invCheck,'Visible','on');
+        set(handles.skelCheck,'Visible','on');
+        set(handles.skel_slider,'Visible','on');
+    end
+    
+    % --- Executes on button press in clin_button.
 function clin_button_Callback(hObject, eventdata, handles)
-% hObject    handle to clin_button (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-  set(handles.greenCheck,'Visible','off');
+    % hObject    handle to clin_button (see GCBO)
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    structure with handles and user data (see GUIDATA)
+    set(handles.greenCheck,'Visible','off');
     set(handles.turqCheck,'Visible','off');
     set(handles.binCheck,'Visible','off');
     set(handles.lightCheck,'Visible','off');
@@ -327,100 +331,136 @@ function clin_button_Callback(hObject, eventdata, handles)
     set(handles.thresText,'Visible','off');
     set(handles.speckText,'Visible','off');
     set(handles.invCheck,'Visible','off');
-
-% --- Executes on button press in histeqCheck.
+    set(handles.skelCheck,'Visible','off');
+    set(handles.skel_slider,'Visible','off');
+    
+    % --- Executes on button press in histeqCheck.
 function histeqCheck_Callback(hObject, eventdata, handles)
-% hObject    handle to histeqCheck (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of histeqCheck
-
-
-% --- Executes on button press in snap_button.
+    % hObject    handle to histeqCheck (see GCBO)
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    structure with handles and user data (see GUIDATA)
+    
+    % Hint: get(hObject,'Value') returns toggle state of histeqCheck
+    
+    
+    % --- Executes on button press in snap_button.
 function snap_button_Callback(hObject, eventdata, handles)
-% hObject    handle to snap_button (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-global frame
-imageName = datestr(now, 'mmmm-dd HH-MM-SS');
-path =strcat(pwd, '\Images')
- if exist(path, 'dir')
-
-path = strcat(pwd, '\Images\', imageName ,'.png')
-imwrite(frame, path);
- else
-      mkdir Images 
-      path = strcat(pwd, '\Images\', imageName ,'.png')
-imwrite(frame, path);
- end
- 
-% --- Executes on slider movement.
+    % hObject    handle to snap_button (see GCBO)
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    structure with handles and user data (see GUIDATA)
+    
+    global frame
+    imageName = datestr(now, 'mmmm-dd HH-MM-SS');
+    path =strcat(pwd, '\Images')
+    if exist(path, 'dir')
+        
+        path = strcat(pwd, '\Images\', imageName ,'.png')
+        imwrite(frame, path);
+    else
+        mkdir Images
+        path = strcat(pwd, '\Images\', imageName ,'.png')
+        imwrite(frame, path);
+    end
+    
+    
+    
+    
+    % --- Executes on slider movement.
 function binSlider_Callback(hObject, eventdata, handles)
-% hObject    handle to binSlider (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'Value') returns position of slider
-%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-
-% --- Executes during object creation, after setting all properties.
+    % hObject    handle to binSlider (see GCBO)
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    structure with handles and user data (see GUIDATA)
+    
+    % Hints: get(hObject,'Value') returns position of slider
+    %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+    
+    % --- Executes during object creation, after setting all properties.
 function binSlider_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to binSlider (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: slider controls usually have a light gray background.
-if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor',[.9 .9 .9]);
-end
-
-% --- Executes on slider movement.
+    % hObject    handle to binSlider (see GCBO)
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    empty - handles not created until after all CreateFcns called
+    
+    % Hint: slider controls usually have a light gray background.
+    if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor',[.9 .9 .9]);
+    end
+    
+    % --- Executes on slider movement.
 function histeqSlider_Callback(hObject, eventdata, handles)
-% hObject    handle to histeqSlider (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'Value') returns position of slider
-%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-
-% --- Executes during object creation, after setting all properties.
+    % hObject    handle to histeqSlider (see GCBO)
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    structure with handles and user data (see GUIDATA)
+    
+    % Hints: get(hObject,'Value') returns position of slider
+    %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+    
+    % --- Executes during object creation, after setting all properties.
 function histeqSlider_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to histeqSlider (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: slider controls usually have a light gray background.
-if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor',[.9 .9 .9]);
-end
-
-% --- Executes on slider movement.
+    % hObject    handle to histeqSlider (see GCBO)
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    empty - handles not created until after all CreateFcns called
+    
+    % Hint: slider controls usually have a light gray background.
+    if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor',[.9 .9 .9]);
+    end
+    
+    % --- Executes on slider movement.
 function speckSlider_Callback(hObject, eventdata, handles)
-% hObject    handle to speckSlider (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'Value') returns position of slider
-%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
-
-
-% --- Executes during object creation, after setting all properties.
+    % hObject    handle to speckSlider (see GCBO)
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    structure with handles and user data (see GUIDATA)
+    
+    % Hints: get(hObject,'Value') returns position of slider
+    %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+    
+    
+    % --- Executes during object creation, after setting all properties.
 function speckSlider_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to speckSlider (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: slider controls usually have a light gray background.
-if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor',[.9 .9 .9]);
-end
-
-% --- Executes on button press in invCheck.
+    % hObject    handle to speckSlider (see GCBO)
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    empty - handles not created until after all CreateFcns called
+    
+    % Hint: slider controls usually have a light gray background.
+    if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor',[.9 .9 .9]);
+    end
+    
+    % --- Executes on button press in invCheck.
 function invCheck_Callback(hObject, eventdata, handles)
-% hObject    handle to invCheck (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of invCheck
+    % hObject    handle to invCheck (see GCBO)
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    structure with handles and user data (see GUIDATA)
+    
+    % Hint: get(hObject,'Value') returns toggle state of invCheck
+    
+    
+    % --- Executes on button press in skelCheck.
+function skelCheck_Callback(hObject, eventdata, handles)
+    % hObject    handle to skelCheck (see GCBO)
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    structure with handles and user data (see GUIDATA)
+    
+    % Hint: get(hObject,'Value') returns toggle state of skelCheck
+    
+    
+    % --- Executes on slider movement.
+function skel_slider_Callback(hObject, eventdata, handles)
+    % hObject    handle to skel_slider (see GCBO)
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    structure with handles and user data (see GUIDATA)
+    
+    % Hints: get(hObject,'Value') returns position of slider
+    %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+    
+    
+    % --- Executes during object creation, after setting all properties.
+function skel_slider_CreateFcn(hObject, eventdata, handles)
+    % hObject    handle to skel_slider (see GCBO)
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    empty - handles not created until after all CreateFcns called
+    
+    % Hint: slider controls usually have a light gray background.
+    if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor',[.9 .9 .9]);
+    end
