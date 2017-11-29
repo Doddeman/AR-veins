@@ -169,43 +169,43 @@ function Gui_OpeningFcn(hObject, eventdata, handles, varargin)
         end
         %% Move image with d, a, w och s
         if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'d'))
-            posVec(1) = posVec(1) + 0.02;
+            posVec(1) = posVec(1) + 0.005;
         end
         if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'a'))
-            posVec(1) = posVec(1) - 0.02;
+            posVec(1) = posVec(1) - 0.005;
         end
         if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'w'))
-            posVec(2) = posVec(2) + 0.02;
+            posVec(2) = posVec(2) + 0.005;
         end
         if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'s'))
-            posVec(2) = posVec(2) - 0.02;
+            posVec(2) = posVec(2) - 0.005;
         end
         
         %% Change size of image with z och x
         if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'v'))
-            posVec(1) = posVec(1)+0.02*0.5;
-            posVec(2) = posVec(2)+0.02*0.5;
-            posVec(3) = posVec(3)-0.02;
-            posVec(4) = posVec(4)-0.02;
+            posVec(1) = posVec(1)+0.005*0.5;
+            posVec(2) = posVec(2)+0.005*0.5;
+            posVec(3) = posVec(3)-0.005;
+            posVec(4) = posVec(4)-0.005;
         end
         if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'c'))
-            posVec(1) = posVec(1)-0.02*0.5;
-            posVec(2) = posVec(2)-0.02*0.5;
-            posVec(3) = posVec(3)+0.02;
-            posVec(4) = posVec(4)+0.02;
+            posVec(1) = posVec(1)-0.005*0.5;
+            posVec(2) = posVec(2)-0.005*0.5;
+            posVec(3) = posVec(3)+0.005;
+            posVec(4) = posVec(4)+0.005;
         end
         set(handles.cameraAxesFrames, 'outerposition', posVec)
         
         %% Zoom in and out
         if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'x'))
-            zoomVar = zoomVar - 0.05;
+            zoomVar = zoomVar - 0.02;
         end
         if (KEY_IS_PRESSED == 1 && strcmpi(keyPressed,'z'))
-            zoomVar = zoomVar + 0.05;
+            zoomVar = zoomVar + 0.02;
         end
         
         zoom(zoomVar);
-        pause(0.2) % "fps"
+        pause(0.1) % "fps"
         
         %% Display
         imshow(frame, 'Parent', snapFrame);
