@@ -1,4 +1,3 @@
 # AR-veins
-. Vein image processing and AR
- for easier blooooood blod blod
+Vein image processing and AR
 
